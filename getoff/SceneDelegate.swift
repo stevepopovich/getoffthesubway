@@ -94,7 +94,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-
+            print(location.coordinate)
             let closestSubway = self.getClosestSubwayStation(location: location)
             window!.rootViewController = UIHostingController(rootView: ContentView(text: closestSubway.stationName))
             print(closestSubway)
@@ -113,11 +113,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             let subwayData = try? JSONDecoder().decode(SubwayData.self, from: data)
 
             guard let strongSubwayData = subwayData else { return }
-
-            print(strongSubwayData.data[0][10])// Name is 10, location is 11
-            print(strongSubwayData.data[0][11])// Name is 10, location is 11
-            print(strongSubwayData.data)
-            print(strongSubwayData.data[0].count)
 
             let subwayDerivedData = self.transformSubwayDataToUsefulStuff(strongSubwayData)
 
@@ -141,6 +136,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         subwayLocations.forEach {
             let distance = location.distance(from: CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude))
             if (distance < shortestDistance) {
+                print(distance)
+                print($0.stationName)
                 closestStation = $0
                 shortestDistance = distance
             }
@@ -157,15 +154,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             if case .string(let stationNameValue) = stationName {
                 if case .string(let pointValue) = pointString {
                     let splitThing = pointValue.split(separator: " ")
-                    let lat = CGFloat(Double(splitThing[1].suffix(splitThing[1].count - 2))!)
-                    let lng = CGFloat(Double(splitThing[2].prefix(while: { $0 != ")" }))!)
+                    if (splitThing[1].count > 3) { // one shitty data point
+                        let lng = CGFloat(Double(splitThing[1].suffix(splitThing[1].count - 1))!)
+                        let lat = CGFloat(Double(splitThing[2].prefix(while: { $0 != ")" }))!)
 
-                    return DerivedSubwayData(
-                            stationName: stationNameValue,
-                            coordinate: Coordinate(CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(lng)
-                            ))
-                    )
-
+                        return DerivedSubwayData(
+                                stationName: stationNameValue,
+                                coordinate: Coordinate(CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(lng)
+                                ))
+                        )
+                    } else {
+                        return DerivedSubwayData(stationName: "Error location!!", coordinate: 
+                        Coordinate(CLLocationCoordinate2D(latitude: CLLocationDegrees(0), longitude: CLLocationDegrees(0))))
+                    }
                 } else { fatalError() }
 
             } else { fatalError() }
