@@ -10,9 +10,30 @@ import UIKit
 import SwiftUI
 import CoreLocation
 
-struct DerivedSubwayData {
+struct DerivedSubwayData : Codable {
     let stationName: String
-    let coordinate: CLLocationCoordinate2D
+    let coordinate: Coordinate
+}
+
+//https://www.objc.io/blog/2018/10/23/custom-types-for-codable/
+struct Coordinate: Codable, Hashable {
+    let latitude, longitude: Double
+}
+
+extension CLLocationCoordinate2D {
+    init(_ coordinate: Coordinate) {
+        self = .init(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+}
+
+extension Coordinate {
+    init(_ coordinate: CLLocationCoordinate2D) {
+        self = .init(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+}
+
+struct DerivedSubwayDataKeys {
+    static let derivedDataKey = "firstStringKey"
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelegate {
@@ -50,28 +71,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         locationManager?.delegate = self
         locationManager?.requestAlwaysAuthorization()
 
-        var urlRequest = URLRequest(url: URL(string: "https://data.cityofnewyork.us/api/views/kk4q-3rt2/rows.json?accessType=DOWNLOAD")!)
+        let defaults = UserDefaults.standard
+        if let stringOne = defaults.data(forKey: DerivedSubwayDataKeys.derivedDataKey) {
+            let subwayData = try! JSONDecoder().decode([DerivedSubwayData].self, from: stringOne)
+            print(subwayData)
+        } else {
+            var urlRequest = URLRequest(url: URL(string: "https://data.cityofnewyork.us/api/views/kk4q-3rt2/rows.json?accessType=DOWNLOAD")!)
 
-        urlRequest.httpMethod = "GET"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+            urlRequest.httpMethod = "GET"
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
 
-            guard let data = data else { return }
-            let subwayData = try? JSONDecoder().decode(SubwayData.self, from: data)
+                guard let data = data else { return }
+                let subwayData = try? JSONDecoder().decode(SubwayData.self, from: data)
 
-            guard let strongSubwayData = subwayData else { return }
+                guard let strongSubwayData = subwayData else { return }
 
-            print(strongSubwayData.data[0][10])// Name is 10, location is 11
-            print(strongSubwayData.data[0][11])// Name is 10, location is 11
-            print(strongSubwayData.data)
-            print(strongSubwayData.data[0].count)
+                print(strongSubwayData.data[0][10])// Name is 10, location is 11
+                print(strongSubwayData.data[0][11])// Name is 10, location is 11
+                print(strongSubwayData.data)
+                print(strongSubwayData.data[0].count)
 
-            let subwayDerivedData = self.transformSubwayDataToUsefulStuff(strongSubwayData)
+                let subwayDerivedData = self.transformSubwayDataToUsefulStuff(strongSubwayData)
 
-            
+                let defaults = UserDefaults.standard
+
+                do {
+                    try defaults.set(JSONEncoder().encode(subwayDerivedData), forKey: DerivedSubwayDataKeys.derivedDataKey)
+                } catch {
+                    fatalError()
+                }
+            }
+            task.resume()
         }
-        task.resume()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -114,7 +147,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
                     let lat = CGFloat(Double(splitThing[1].suffix(splitThing[1].count - 2))!)
                     let lng = CGFloat(Double(splitThing[2].prefix(while: { $0 != ")" }))!)
 
-                    return DerivedSubwayData(stationName: stationNameValue, coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(lng)))
+                    return DerivedSubwayData(
+                            stationName: stationNameValue,
+                            coordinate: Coordinate(CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(lng)
+                            ))
+                    )
 
                 } else { fatalError() }
 
