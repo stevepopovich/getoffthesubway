@@ -42,13 +42,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
     var locationManager: CLLocationManager?
 
+    var subwayLocations: [DerivedSubwayData] = []
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView()
+        let contentView = ContentView(text: "Hello World!")
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
@@ -69,12 +71,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
     func sceneDidBecomeActive(_ scene: UIScene) {
         locationManager = CLLocationManager()
         locationManager?.delegate = self
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager?.pausesLocationUpdatesAutomatically = false
+        locationManager?.startUpdatingLocation()
         locationManager?.requestAlwaysAuthorization()
 
         let defaults = UserDefaults.standard
         if let stringOne = defaults.data(forKey: DerivedSubwayDataKeys.derivedDataKey) {
             let subwayData = try! JSONDecoder().decode([DerivedSubwayData].self, from: stringOne)
-            print(subwayData)
+            self.subwayLocations = subwayData
         } else {
             var urlRequest = URLRequest(url: URL(string: "https://data.cityofnewyork.us/api/views/kk4q-3rt2/rows.json?accessType=DOWNLOAD")!)
 
@@ -99,6 +104,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
                 do {
                     try defaults.set(JSONEncoder().encode(subwayDerivedData), forKey: DerivedSubwayDataKeys.derivedDataKey)
+
+                    self.subwayLocations = subwayDerivedData
                 } catch {
                     fatalError()
                 }
@@ -131,8 +138,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-            print(location)
+
+            let closestSubway = self.getClosestSubwayStation(location: location)
+            window!.rootViewController = UIHostingController(rootView: ContentView(text: closestSubway.stationName))
         }
+    }
+
+    private func getClosestSubwayStation(location: CLLocation) -> DerivedSubwayData {
+        var shortestDistance = Double.greatestFiniteMagnitude
+        var closestStation: DerivedSubwayData?
+
+        subwayLocations.forEach {
+            let distance = location.distance(from: CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude))
+            if (distance < shortestDistance) {
+                closestStation = $0
+                shortestDistance = distance
+            }
+        }
+
+        return closestStation!
     }
 
     private func transformSubwayDataToUsefulStuff(_ subwayData: SubwayData) -> [DerivedSubwayData]  {
