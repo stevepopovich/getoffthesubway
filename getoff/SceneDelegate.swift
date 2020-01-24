@@ -8,11 +8,13 @@
 
 import UIKit
 import SwiftUI
+import CoreLocation
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
 
+    var locationManager: CLLocationManager?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -39,8 +41,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.requestAlwaysAuthorization()
+
+        var urlRequest = URLRequest(url: URL(string: "https://data.cityofnewyork.us/api/views/kk4q-3rt2/rows.json?accessType=DOWNLOAD")!)
+        var locationManager: CLLocationManager?
+
+        urlRequest.httpMethod = "GET"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+
+            guard let data = data else { return }
+            let subwayData = try? JSONDecoder().decode(SubwayData.self, from: data)
+
+            guard let strongSubwayData = subwayData else { return }
+            print(strongSubwayData.data[0][10])// Name is 10, location is 11
+            print(strongSubwayData.data[0][11])// Name is 10, location is 11
+
+        }
+        task.resume()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -59,6 +80,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            // you're good to go!
+        }
+    }
 
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            print(location)
+        }
+    }
 }
 

@@ -56,5 +56,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location is required to tell when to get off the subway</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is required to tell when to get off the subway</string>
 </dict>
 </plist>

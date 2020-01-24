@@ -13,6 +13,7 @@
 		B386070223DB4D69001A34EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B386070123DB4D69001A34EC /* Assets.xcassets */; };
 		B386070523DB4D69001A34EC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B386070423DB4D69001A34EC /* Preview Assets.xcassets */; };
 		B386070823DB4D69001A34EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B386070623DB4D69001A34EC /* LaunchScreen.storyboard */; };
+		B386073223DB556A001A34EC /* SubwayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B386073123DB556A001A34EC /* SubwayData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		B386070923DB4D69001A34EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B386070E23DB4D69001A34EC /* getoffTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = getoffTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B386071923DB4D69001A34EC /* getoffUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = getoffUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B386073123DB556A001A34EC /* SubwayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubwayData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				B386070623DB4D69001A34EC /* LaunchScreen.storyboard */,
 				B386070923DB4D69001A34EC /* Info.plist */,
 				B386070323DB4D69001A34EC /* Preview Content */,
+				B386073123DB556A001A34EC /* SubwayData.swift */,
 			);
 			path = getoff;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B386073223DB556A001A34EC /* SubwayData.swift in Sources */,
 				B38606FC23DB4D68001A34EC /* AppDelegate.swift in Sources */,
 				B38606FE23DB4D68001A34EC /* SceneDelegate.swift in Sources */,
 				B386070023DB4D68001A34EC /* ContentView.swift in Sources */,
