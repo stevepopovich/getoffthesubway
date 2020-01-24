@@ -46,7 +46,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
         locationManager?.requestAlwaysAuthorization()
 
         var urlRequest = URLRequest(url: URL(string: "https://data.cityofnewyork.us/api/views/kk4q-3rt2/rows.json?accessType=DOWNLOAD")!)
-        var locationManager: CLLocationManager?
 
         urlRequest.httpMethod = "GET"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -57,8 +56,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             let subwayData = try? JSONDecoder().decode(SubwayData.self, from: data)
 
             guard let strongSubwayData = subwayData else { return }
+
             print(strongSubwayData.data[0][10])// Name is 10, location is 11
             print(strongSubwayData.data[0][11])// Name is 10, location is 11
+            print(strongSubwayData.data)
+            print(strongSubwayData.data[0].count)
 
         }
         task.resume()
@@ -82,7 +84,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
-            // you're good to go!
+            print(locationManager?.location)
         }
     }
 
