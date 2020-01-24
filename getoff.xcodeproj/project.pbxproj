@@ -34,7 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B38606F823DB4D68001A34EC /* getoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = getoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B38606F823DB4D68001A34EC /* ShouldIGetOff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShouldIGetOff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B38606FB23DB4D68001A34EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B38606FD23DB4D68001A34EC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B38606FF23DB4D68001A34EC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -83,7 +83,7 @@
 		B38606F923DB4D68001A34EC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B38606F823DB4D68001A34EC /* getoff.app */,
+				B38606F823DB4D68001A34EC /* ShouldIGetOff.app */,
 				B386070E23DB4D69001A34EC /* getoffTests.xctest */,
 				B386071923DB4D69001A34EC /* getoffUITests.xctest */,
 			);
@@ -130,7 +130,7 @@
 			);
 			name = getoff;
 			productName = getoff;
-			productReference = B38606F823DB4D68001A34EC /* getoff.app */;
+			productReference = B38606F823DB4D68001A34EC /* ShouldIGetOff.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B386070D23DB4D69001A34EC /* getoffTests */ = {
@@ -415,12 +415,13 @@
 				DEVELOPMENT_TEAM = PU47G4956Z;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = getoff/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.stevenpopovich.getoff;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ShouldIGetOff;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -435,12 +436,13 @@
 				DEVELOPMENT_TEAM = PU47G4956Z;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = getoff/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.stevenpopovich.getoff;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ShouldIGetOff;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
