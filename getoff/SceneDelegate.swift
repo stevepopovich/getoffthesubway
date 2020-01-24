@@ -10,6 +10,11 @@ import UIKit
 import SwiftUI
 import CoreLocation
 
+struct DerivedSubwayData {
+    let stationName: String
+    let coordinate: CLLocationCoordinate2D
+}
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
@@ -62,6 +67,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
             print(strongSubwayData.data)
             print(strongSubwayData.data[0].count)
 
+            let subwayDerivedData = self.transformSubwayDataToUsefulStuff(strongSubwayData)
+
+            
         }
         task.resume()
     }
@@ -91,6 +99,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, CLLocationManagerDelega
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             print(location)
+        }
+    }
+
+    private func transformSubwayDataToUsefulStuff(_ subwayData: SubwayData) -> [DerivedSubwayData]  {
+        subwayData.data.map {
+            let pointString = $0[11]
+            let stationName = $0[10]
+
+            if case .string(let stationNameValue) = stationName {
+                if case .string(let pointValue) = pointString {
+                    let splitThing = pointValue.split(separator: " ")
+                    print(splitThing)
+                    let lat = CGFloat(Double(splitThing[1].suffix(splitThing[1].count - 2))!)
+                    let lng = CGFloat(Double(splitThing[2].prefix(while: { $0 != ")" }))!)
+
+                    return DerivedSubwayData(stationName: stationNameValue, coordinate: CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(lng)))
+
+                } else { fatalError() }
+
+            } else { fatalError() }
         }
     }
 }
